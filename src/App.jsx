@@ -1,32 +1,23 @@
-import { useEffect } from "react";
-import LiveCO2Chart from "./components/charts/LiveCO2Chart";
-import LiveTempChart from "./components/charts/LiveTempChart";
-import LiveHumidityChart from "./components/charts/LiveHumidityChart.jsx";
-import useMqttClient from "./hooks/useMqttClient";
-import { Card, Grid } from "@tremor/react";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import Home from './pages/Home';
+import HistoricalData from './pages/HistoricalData';
 
 const App = () => {
-    const { connect } = useMqttClient("sensor/data");
-
-    useEffect(() => {
-        connect();
-    }, [connect]);
-
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Live Environmental Data</h1>
-            <Grid numItemsMd={1} gap="6">
-                <Card>
-                    <LiveCO2Chart />
-                </Card>
-                <Card>
-                    <LiveTempChart />
-                </Card>
-                <Card>
-                    <LiveHumidityChart />
-                </Card>
-            </Grid>
-        </div>
+        <Router>
+            <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+                <Sidebar />
+                <main className="flex-1 overflow-x-hidden overflow-y-auto">
+                    <div className="container mx-auto px-6 py-8">
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/settings" element={<HistoricalData />} />
+                        </Routes>
+                    </div>
+                </main>
+            </div>
+        </Router>
     );
 };
 

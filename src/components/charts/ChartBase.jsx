@@ -2,10 +2,10 @@ import { LineChart } from "@tremor/react";
 import PropTypes from "prop-types";
 
 const ChartBase = ({ title, dataKey, data, color }) => (
-    <div className="my-4">
+    <div className="w-full">
         <h2 className="text-lg font-semibold mb-2">{title}</h2>
         <LineChart
-            className="h-80"
+            className="w-full h-80"
             data={data}
             index="time"
             categories={[dataKey]}
@@ -24,4 +24,3 @@ ChartBase.propTypes = {
 };
 
 export default ChartBase;
-
