@@ -61,7 +61,7 @@ const Sidebar = () => {
                                 </div>
                             </div>
                             <span
-                                className={`ml-4 truncate transition-all duration-300 
+                                className={`truncate transition-all duration-300 
                                     ${isOpen ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'} 
                                     overflow-hidden whitespace-nowrap
                                 `}
