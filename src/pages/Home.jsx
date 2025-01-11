@@ -16,13 +16,13 @@ const Home = () => {
         <div className="w-full space-y-6 px-4">
             <h1 className="text-2xl font-bold">Live Environmental Data</h1>
             <div className="space-y-6 w-full">
-                <Card className="w-full">
+                <Card>
                     <LiveCO2Chart />
                 </Card>
-                <Card className="w-full">
+                <Card>
                     <LiveTempChart />
                 </Card>
-                <Card className="w-full">
+                <Card>
                     <LiveHumidityChart />
                 </Card>
             </div>
