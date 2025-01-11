@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { DateRangePicker } from "@tremor/react";
 import ChartBase from "../components/charts/ChartBase";
+import HistoricalDataTable from "../components/MeasurementsTable.jsx";
 
 const HistoricalData = () => {
     const [dateRange, setDateRange] = useState({ from: null, to: null });
@@ -77,82 +78,47 @@ const HistoricalData = () => {
         <div className="p-8">
             <div className="mx-auto max-w-lg space-y-6">
                 <p className="text-center font-mono text-sm">Select a Date Range</p>
-                <DateRangePicker
-                    value={dateRange}
-                    onValueChange={(range) => setDateRange(range)}
-                    minDate={firstDayOfPreviousYear}
-                    maxDate={today}
-                    weekStartsOn={1}
-                    enableSelect={true}
-                    enableClear={true}
-                    placeholder="Select a custom date range"
-                    className="mx-auto"
-                />
-                <button
-                    onClick={fetchData}
-                    className="w-full py-2 rounded-md bg-primary hover:bg-primary-dark transition-all duration-200"
-                    disabled={loading}
-                >
-                    {loading ? "Fetching Data..." : "Fetch Data"}
-                </button>
+
+                <div className="flex items-center gap-4">
+                    <DateRangePicker
+                        value={dateRange}
+                        onValueChange={(range) => setDateRange(range)}
+                        minDate={firstDayOfPreviousYear}
+                        maxDate={today}
+                        weekStartsOn={1}
+                        enableSelect={true}
+                        enableClear={true}
+                        placeholder="Select a custom date range"
+                        className="flex-1"
+                    />
+                    <button
+                        onClick={fetchData}
+                        className="py-2 px-4 rounded-md bg-primary hover:bg-primary-dark transition-all duration-200"
+                        disabled={loading}
+                    >
+                        {loading ? "Fetching Data..." : "Fetch Data"}
+                    </button>
+                </div>
             </div>
 
             {chartData.length > 0 && (
                 <>
                     <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
-                        <ChartBase
-                            title="CO2 Levels"
-                            dataKey="co2"
-                            data={chartData}
-                            color="indigo"
-                        />
-                        <ChartBase
-                            title="Temperature"
-                            dataKey="temperature"
-                            data={chartData}
-                            color="red"
-                        />
-                        <ChartBase
-                            title="Humidity"
-                            dataKey="humidity"
-                            data={chartData}
-                            color="green"
-                        />
+                        <ChartBase title="CO2 Levels" dataKey="co2" data={chartData} color="indigo"/>
+                        <ChartBase title="Temperature" dataKey="temperature" data={chartData} color="red"/>
+                        <ChartBase title="Humidity" dataKey="humidity" data={chartData} color="green"/>
                     </div>
 
-                    <div className="mt-10">
-                        <table className="w-full border-collapse border border-gray-200">
-                            <thead>
-                            <tr>
-                                <th className="border px-4 py-2 text-left">Timestamp</th>
-                                <th className="border px-4 py-2 text-left">CO2</th>
-                                <th className="border px-4 py-2 text-left">Temperature</th>
-                                <th className="border px-4 py-2 text-left">Humidity</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {chartData.map((dataPoint, index) => (
-                                <tr key={index}>
-                                    <td className="border px-4 py-2">{dataPoint.timestamp}</td>
-                                    <td className="border px-4 py-2">{dataPoint.co2}</td>
-                                    <td className="border px-4 py-2">{dataPoint.temperature}</td>
-                                    <td className="border px-4 py-2">{dataPoint.humidity}</td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    <div className="mt-6 flex justify-end">
-                        <button
-                            onClick={handleSnapshot}
-                            className="py-2 px-4 rounded-md bg-secondary hover:bg-secondary-dark transition-all duration-200"
-                        >
-                            Snapshot These Measurements
+                    <HistoricalDataTable chartData={chartData}/>
+                    <div className={"text-center mt-6"}>
+                        <button onClick={handleSnapshot} className="text-sm">
+                            Take Snapshot
                         </button>
                     </div>
-                </div>
                 </>
-                )}
+            )}
         </div>
+
     );
 };
 
