@@ -8,13 +8,11 @@ const App = () => {
         <Router>
             <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
                 <Sidebar />
-                <main className="flex-1 overflow-x-hidden overflow-y-auto">
-                    <div className="container mx-auto px-6 py-8">
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/settings" element={<HistoricalData />} />
-                        </Routes>
-                    </div>
+                <main className="flex-grow overflow-x-hidden overflow-y-auto">
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/settings" element={<HistoricalData />} />
+                    </Routes>
                 </main>
             </div>
         </Router>

@@ -9,7 +9,7 @@ const LiveTempChart = () => {
             title="Live Temperature"
             dataKey="temperature"
             data={sensorData}
-            color="#ff7300"
+            color="red"
             yUnit="°C"
         />
     );

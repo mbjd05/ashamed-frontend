@@ -9,7 +9,7 @@ const LiveCO2Chart = () => {
             title="Live CO2 Levels"
             dataKey="co2"
             data={sensorData}
-            color="#8884d8"
+            color="indigo"
             yUnit="ppm"
         />
     );

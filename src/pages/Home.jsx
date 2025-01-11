@@ -6,14 +6,14 @@ import useMqttClient from "../hooks/useMqttClient";
 import { Card } from "@tremor/react";
 
 const Home = () => {
-    const { connect } = useMqttClient("sensor/data");
+    const { connect } = useMqttClient("z2m/air-monitor");
 
     useEffect(() => {
         connect();
     }, [connect]);
 
     return (
-        <div className="w-full space-y-6">
+        <div className="w-full space-y-6 px-4">
             <h1 className="text-2xl font-bold">Live Environmental Data</h1>
             <div className="space-y-6 w-full">
                 <Card className="w-full">

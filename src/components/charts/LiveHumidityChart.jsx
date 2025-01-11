@@ -9,7 +9,7 @@ const LiveHumidityChart = () => {
             title="Live Humidity"
             dataKey="humidity"
             data={sensorData}
-            color="#387908"
+            color="green"
             yUnit="%"
         />
     );
