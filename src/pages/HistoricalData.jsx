@@ -8,9 +8,8 @@ const HistoricalData = () => {
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // Calculate limits for DateRangePicker
     const today = new Date();
-    const firstDayOfPreviousYear = new Date(today.getFullYear() - 1, 0, 1); // Jan 1st of previous year
+    const firstDayOfPreviousYear = new Date(today.getFullYear() - 1, 0, 1);
 
     const fetchData = async () => {
         if (!dateRange.from || !dateRange.to) {
@@ -21,39 +20,30 @@ const HistoricalData = () => {
         setLoading(true);
 
         try {
-            // Hardcoded topic
             const topic = "z2m/air-monitor";
+            const start = convertToUTC(dateRange.from);
+            const end = convertToUTC(dateRange.to, true);
+            const backendUrl = "https://localhost:443/api";
 
-            // Convert the 'from' and 'to' dates to UTC
-            const start = convertToUTC(dateRange.from); // Start at 00:00:00 UTC
-            const end = convertToUTC(dateRange.to, true); // End at 23:59:59.999 UTC
-
-            // Hardcoded Backend URL
-            const backendUrl = "https://localhost:443/api"; // Replace with your actual backend URL
-
-            // Make GET request to the backend
             const response = await axios.get(`${backendUrl}/mqtt/messages`, {
                 params: {
                     topic: topic,
-                    start: start.toISOString(), // Send as UTC ISO string
-                    end: end.toISOString(),     // Send as UTC ISO string
+                    start: start.toISOString(),
+                    end: end.toISOString(),
                 },
             });
 
-            // Transform the response data into the format expected by tremor charts
             const transformedData = response.data.map((entry) => ({
-                timestamp: entry.timestamp, // Use timestamp as the x-axis value
+                timestamp: entry.timestamp,
                 co2: entry.deserializedPayload.co2,
                 temperature: entry.deserializedPayload.temperature,
                 humidity: entry.deserializedPayload.humidity,
             }));
 
-            // Update state with the transformed data
             setChartData(transformedData);
         } catch (error) {
             console.error("Error fetching data:", error);
 
-            // Show an error alert based on status code
             if (error.response?.status === 404) {
                 alert(error.response.data.Message || "No data found for the specified criteria.");
             } else {
@@ -64,7 +54,6 @@ const HistoricalData = () => {
         }
     };
 
-// Utility function to convert the date to UTC
     const convertToUTC = (date, isEndOfDay = false) => {
         const utcDate = new Date(date);
         return new Date(
@@ -79,27 +68,26 @@ const HistoricalData = () => {
             )
         );
     };
-    
+
+    const handleSnapshot = () => {
+        alert("Snapshot functionality will be implemented later.");
+    };
+
     return (
         <div className="p-8">
-            {/* Date Picker Section */}
             <div className="mx-auto max-w-lg space-y-6">
                 <p className="text-center font-mono text-sm">Select a Date Range</p>
-
-                {/* DateRangePicker */}
                 <DateRangePicker
                     value={dateRange}
                     onValueChange={(range) => setDateRange(range)}
-                    minDate={firstDayOfPreviousYear} // Allow selection only from the first day of the previous year
-                    maxDate={today} // Allow selection only up to today
-                    weekStartsOn={1} // Set Monday as the first day of the week
-                    enableSelect={true} // Enable select menu
-                    enableClear={true} // Allow clearing selections
-                    placeholder="Select a custom date range" // Custom placeholder text
+                    minDate={firstDayOfPreviousYear}
+                    maxDate={today}
+                    weekStartsOn={1}
+                    enableSelect={true}
+                    enableClear={true}
+                    placeholder="Select a custom date range"
                     className="mx-auto"
                 />
-
-                {/* Fetch Data Button */}
                 <button
                     onClick={fetchData}
                     className="w-full py-2 rounded-md bg-primary hover:bg-primary-dark transition-all duration-200"
@@ -109,29 +97,61 @@ const HistoricalData = () => {
                 </button>
             </div>
 
-            {/* Chart Section */}
             {chartData.length > 0 && (
-                <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
-                    <ChartBase
-                        title="CO2 Levels"
-                        dataKey="co2"
-                        data={chartData}
-                        color="indigo"
-                    />
-                    <ChartBase
-                        title="Temperature"
-                        dataKey="temperature"
-                        data={chartData}
-                        color="red"
-                    />
-                    <ChartBase
-                        title="Humidity"
-                        dataKey="humidity"
-                        data={chartData}
-                        color="green"
-                    />
+                <>
+                    <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
+                        <ChartBase
+                            title="CO2 Levels"
+                            dataKey="co2"
+                            data={chartData}
+                            color="indigo"
+                        />
+                        <ChartBase
+                            title="Temperature"
+                            dataKey="temperature"
+                            data={chartData}
+                            color="red"
+                        />
+                        <ChartBase
+                            title="Humidity"
+                            dataKey="humidity"
+                            data={chartData}
+                            color="green"
+                        />
+                    </div>
+
+                    <div className="mt-10">
+                        <table className="w-full border-collapse border border-gray-200">
+                            <thead>
+                            <tr>
+                                <th className="border px-4 py-2 text-left">Timestamp</th>
+                                <th className="border px-4 py-2 text-left">CO2</th>
+                                <th className="border px-4 py-2 text-left">Temperature</th>
+                                <th className="border px-4 py-2 text-left">Humidity</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {chartData.map((dataPoint, index) => (
+                                <tr key={index}>
+                                    <td className="border px-4 py-2">{dataPoint.timestamp}</td>
+                                    <td className="border px-4 py-2">{dataPoint.co2}</td>
+                                    <td className="border px-4 py-2">{dataPoint.temperature}</td>
+                                    <td className="border px-4 py-2">{dataPoint.humidity}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    <div className="mt-6 flex justify-end">
+                        <button
+                            onClick={handleSnapshot}
+                            className="py-2 px-4 rounded-md bg-secondary hover:bg-secondary-dark transition-all duration-200"
+                        >
+                            Snapshot These Measurements
+                        </button>
+                    </div>
                 </div>
-            )}
+                </>
+                )}
         </div>
     );
 };
