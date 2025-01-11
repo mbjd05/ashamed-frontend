@@ -21,28 +21,72 @@ const HistoricalData = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post("/api/data", {
-                startDate: dateRange.from,
-                endDate: dateRange.to,
+            // Hardcoded topic
+            const topic = "z2m/air-monitor";
+
+            // Convert the 'from' and 'to' dates to UTC
+            const start = convertToUTC(dateRange.from); // Start at 00:00:00 UTC
+            const end = convertToUTC(dateRange.to, true); // End at 23:59:59.999 UTC
+
+            // Hardcoded Backend URL
+            const backendUrl = "https://localhost:443/api"; // Replace with your actual backend URL
+
+            // Make GET request to the backend
+            const response = await axios.get(`${backendUrl}/mqtt/messages`, {
+                params: {
+                    topic: topic,
+                    start: start.toISOString(), // Send as UTC ISO string
+                    end: end.toISOString(),     // Send as UTC ISO string
+                },
             });
 
-            // Assume the backend sends an array of data points for the timeframe
-            setChartData(response.data);
+            // Transform the response data into the format expected by tremor charts
+            const transformedData = response.data.map((entry) => ({
+                timestamp: entry.timestamp, // Use timestamp as the x-axis value
+                co2: entry.deserializedPayload.co2,
+                temperature: entry.deserializedPayload.temperature,
+                humidity: entry.deserializedPayload.humidity,
+            }));
+
+            // Update state with the transformed data
+            setChartData(transformedData);
         } catch (error) {
             console.error("Error fetching data:", error);
-            alert("Failed to fetch data. Please try again.");
+
+            // Show an error alert based on status code
+            if (error.response?.status === 404) {
+                alert(error.response.data.Message || "No data found for the specified criteria.");
+            } else {
+                alert("Failed to fetch data. Please try again.");
+            }
         } finally {
             setLoading(false);
         }
     };
 
+// Utility function to convert the date to UTC
+    const convertToUTC = (date, isEndOfDay = false) => {
+        const utcDate = new Date(date);
+        return new Date(
+            Date.UTC(
+                utcDate.getFullYear(),
+                utcDate.getMonth(),
+                utcDate.getDate(),
+                isEndOfDay ? 23 : 0,
+                isEndOfDay ? 59 : 0,
+                isEndOfDay ? 59 : 0,
+                isEndOfDay ? 999 : 0
+            )
+        );
+    };
+    
     return (
         <div className="p-8">
             {/* Date Picker Section */}
             <div className="mx-auto max-w-lg space-y-6">
-                <p className="text-center font-mono text-sm">
-                    Select a Date Range
-                </p>
+                <p className="text-center font-mono text-sm">Select a Date Range</p>
+
+                {/* DateRangePicker */}
                 <DateRangePicker
                     value={dateRange}
                     onValueChange={(range) => setDateRange(range)}
@@ -51,9 +95,11 @@ const HistoricalData = () => {
                     weekStartsOn={1} // Set Monday as the first day of the week
                     enableSelect={true} // Enable select menu
                     enableClear={true} // Allow clearing selections
-                    placeholder="Select a date range" // Custom placeholder text
+                    placeholder="Select a custom date range" // Custom placeholder text
                     className="mx-auto"
                 />
+
+                {/* Fetch Data Button */}
                 <button
                     onClick={fetchData}
                     className="w-full py-2 rounded-md bg-primary hover:bg-primary-dark transition-all duration-200"
@@ -70,20 +116,20 @@ const HistoricalData = () => {
                         title="CO2 Levels"
                         dataKey="co2"
                         data={chartData}
-                        color="blue"
-                        yUnit="ppm"/>
+                        color="indigo"
+                    />
                     <ChartBase
                         title="Temperature"
                         dataKey="temperature"
                         data={chartData}
                         color="red"
-                        yUnit="°C"/>
+                    />
                     <ChartBase
                         title="Humidity"
                         dataKey="humidity"
                         data={chartData}
                         color="green"
-                        yUnit="%"/>
+                    />
                 </div>
             )}
         </div>

@@ -10,7 +10,6 @@ const LiveHumidityChart = () => {
             dataKey="humidity"
             data={sensorData}
             color="green"
-            yUnit="%"
         />
     );
 };

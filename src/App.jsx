@@ -11,7 +11,7 @@ const App = () => {
                 <main className="flex-grow overflow-x-hidden overflow-y-auto">
                     <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/settings" element={<HistoricalData />} />
+                        <Route path="/historyview" element={<HistoricalData />} />
                     </Routes>
                 </main>
             </div>

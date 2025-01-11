@@ -20,8 +20,7 @@ ChartBase.propTypes = {
     title: PropTypes.string.isRequired,
     dataKey: PropTypes.string.isRequired,
     data: PropTypes.arrayOf(PropTypes.object).isRequired,
-    color: PropTypes.string.isRequired,
-    yUnit: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired
 };
 
 export default ChartBase;

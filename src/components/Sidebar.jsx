@@ -4,7 +4,7 @@ import {useState} from "react";
 
 const navItems = [
     {title: 'Home', icon: RiHome4Line, path: '/'},
-    {title: 'Historical Data', icon: RiHistoryLine, path: '/settings'},
+    {title: 'Historical Data', icon: RiHistoryLine, path: '/historyview'},
 ];
 
 const Sidebar = () => {

@@ -10,7 +10,6 @@ const LiveCO2Chart = () => {
             dataKey="co2"
             data={sensorData}
             color="indigo"
-            yUnit="ppm"
         />
     );
 };
