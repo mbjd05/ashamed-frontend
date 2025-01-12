@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-const SnapshotModal = ({ isOpen, onClose, onSave }) => {
+const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger }) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+
+    useEffect(() => {
+        if (isOpen) {
+            setTitle("");
+            setDescription("");
+        }
+    }, [isOpen, clearTrigger]);
 
     if (!isOpen) return null;
 
@@ -32,11 +39,11 @@ const SnapshotModal = ({ isOpen, onClose, onSave }) => {
                         placeholder=""
                         modules={{
                             toolbar: [
-                                ["bold", "italic", "underline", "strike"], // Formatting
-                                [{ header: [1, 2, 3, false] }], // Headings
-                                [{ list: "ordered" }, { list: "bullet" }], // Lists
-                                [{ align: [] }], // Text alignment
-                                ["clean"], // Remove formatting
+                                ["bold", "italic", "underline", "strike"],
+                                [{ header: [1, 2, 3, false] }],
+                                [{ list: "ordered" }, { list: "bullet" }],
+                                [{ align: [] }],
+                                ["clean"],
                             ],
                         }}
                         className="border rounded bg-white"
@@ -65,6 +72,7 @@ SnapshotModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
+    clearTrigger: PropTypes.number.isRequired,
 };
 
 export default SnapshotModal;

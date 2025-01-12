@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import axios from "axios";
 import { DateRangePicker } from "@tremor/react";
 import ChartBase from "../components/charts/ChartBase";
@@ -10,6 +10,7 @@ const HistoricalData = () => {
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [clearTrigger, setClearTrigger] = useState(0);
 
     const fetchData = async () => {
         if (!dateRange.from || !dateRange.to) {
@@ -60,18 +61,18 @@ const HistoricalData = () => {
 
         try {
             const messageIds = chartData.map((entry) => entry.id);
-            
+
             await axios.post("https://localhost:443/api/snapshot", {
-                title,
-                description,
-                messageIds,
-            },
+                    title,
+                    description,
+                    messageIds,
+                },
                 {
                     headers: {
                         'accept': '*/*',
                         'Content-Type': 'application/json',
                     }}
-                );
+            );
 
             alert("Snapshot created successfully!");
             setModalOpen(false);
@@ -97,6 +98,15 @@ const HistoricalData = () => {
             )
         );
     };
+
+    const openModal = useCallback(() => {
+        setClearTrigger(prev => prev + 1);
+        setModalOpen(true);
+    }, []);
+
+    const closeModal = useCallback(() => {
+        setModalOpen(false);
+    }, []);
 
     return (
         <div className="p-8">
@@ -131,7 +141,7 @@ const HistoricalData = () => {
 
                     <div className="text-center mt-6">
                         <button
-                            onClick={() => setModalOpen(true)}
+                            onClick={openModal}
                             className="py-2 px-4 bg-blue-600 text-white rounded"
                         >
                             Create Snapshot
@@ -142,8 +152,9 @@ const HistoricalData = () => {
 
             <SnapshotModal
                 isOpen={isModalOpen}
-                onClose={() => setModalOpen(false)}
+                onClose={closeModal}
                 onSave={handleSaveSnapshot}
+                clearTrigger={clearTrigger}
             />
         </div>
     );
