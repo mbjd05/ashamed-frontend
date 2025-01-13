@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
-import { DateRangePicker } from "@tremor/react"; // Assuming you have a DateRangePicker component that supports time
+import { DateRangePicker } from "@tremor/react";
 import ChartBase from "../components/charts/ChartBase";
 import HistoricalDataTable from "../components/MeasurementsTable.jsx";
 import SnapshotModal from "../components/SnapshotModal";
@@ -12,6 +12,21 @@ const HistoricalData = () => {
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
     const [clearTrigger, setClearTrigger] = useState(0);
+    const [hasFetched, setHasFetched] = useState(false); // New state to track fetch execution
+
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+
+    const handleDateChange = (range) => {
+        const adjustedRange = { ...range };
+        if (range.from && range.from > today) {
+            adjustedRange.from = today;
+        }
+        if (range.to && range.to > today) {
+            adjustedRange.to = today;
+        }
+        setDateRange(adjustedRange);
+    };
 
     const fetchData = async () => {
         if (!dateRange.from) {
@@ -20,6 +35,7 @@ const HistoricalData = () => {
         }
 
         setLoading(true);
+        setHasFetched(true); // Mark that a request has been executed
 
         try {
             const topic = "z2m/air-monitor";
@@ -51,7 +67,6 @@ const HistoricalData = () => {
             }
         } catch (error) {
             if (error.response && error.response.status === 404) {
-                alert("No messages found for this topic within the specified time range.");
                 setFullMessages([]);
                 setChartData([]);
             } else if (error.response && error.response.data && error.response.data.message) {
@@ -112,7 +127,7 @@ const HistoricalData = () => {
     };
 
     const openModal = useCallback(() => {
-        setClearTrigger(prev => prev + 1);
+        setClearTrigger((prev) => prev + 1);
         setModalOpen(true);
     }, []);
 
@@ -129,9 +144,9 @@ const HistoricalData = () => {
                 <div className="flex items-center gap-4">
                     <DateRangePicker
                         value={dateRange}
-                        onValueChange={(range) => setDateRange(range)}
+                        onValueChange={handleDateChange}
                         className="flex-1"
-                        showTimePicker // Assuming this prop enables time input
+                        toDate={today}
                     />
                     <button
                         onClick={fetchData}
@@ -143,15 +158,30 @@ const HistoricalData = () => {
                 </div>
             </div>
 
-            {chartData.length > 0 && (
+            {loading && (
+                <div className="text-center mt-6">
+                    <p className="text-lg font-semibold text-gray-500">Loading data...</p>
+                </div>
+            )}
+
+            {!loading && hasFetched && chartData.length === 0 && (
+                <div className="text-center mt-10">
+                    <div className="p-6 bg-gray-100 border border-gray-300 rounded-lg shadow">
+                        <h2 className="text-xl font-semibold text-gray-700">No Data Found</h2>
+                        <p className="mt-2 text-gray-600">
+                            No messages were found for the selected topic and time range. Try adjusting the date range or ensuring data is available.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {!loading && chartData.length > 0 && (
                 <>
                     <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
                         <ChartBase title="CO2 Levels" dataKey="co2" data={chartData} color="indigo"/>
                         <ChartBase title="Temperature" dataKey="temperature" data={chartData} color="red"/>
                         <ChartBase title="Humidity" dataKey="humidity" data={chartData} color="green"/>
                     </div>
-
-                    <HistoricalDataTable chartData={chartData}/>
 
                     <div className="text-center mt-6">
                         <button
@@ -161,6 +191,8 @@ const HistoricalData = () => {
                             Create Snapshot
                         </button>
                     </div>
+
+                    <HistoricalDataTable chartData={chartData}/>
                 </>
             )}
 
