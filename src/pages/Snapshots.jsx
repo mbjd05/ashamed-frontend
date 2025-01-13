@@ -64,34 +64,19 @@ const Snapshots = () => {
         setEditingSnapshot(null);
     }, []);
 
-    const handleSaveSnapshot = async (title, description) => {
+    const handleEditSnapshot = async (title, description) => {
         try {
             setLoading(true);
-            if (editingSnapshot) {
-                await axios.put(`${API_BASE_URL}/snapshot/${editingSnapshot.id}`, {
-                    title,
-                    description,
-                });
-            } else {
-                if (!selectedSnapshot || !selectedSnapshot.messages) {
-                    alert("No data available to create a snapshot.");
-                    return;
-                }
-                await axios.post(`${API_BASE_URL}/snapshot`, {
-                    title,
-                    description,
-                    messages: selectedSnapshot.messages,
-                });
-                alert("Snapshot created successfully!");
-            }
+            await axios.put(`${API_BASE_URL}/snapshot/${editingSnapshot.id}`, {
+                title,
+                description,
+            });
             setModalOpen(false);
             await fetchSnapshots();
-            if (editingSnapshot) {
-                await fetchSnapshotDetails(editingSnapshot.id);
-            }
+            await fetchSnapshotDetails(editingSnapshot.id);
         } catch (error) {
-            console.error("Error saving snapshot:", error);
-            alert("Failed to save snapshot.");
+            console.error("Error updating snapshot:", error);
+            alert("Failed to update snapshot.");
         } finally {
             setLoading(false);
             setEditingSnapshot(null);
@@ -197,7 +182,7 @@ const Snapshots = () => {
             <SnapshotModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                onSave={handleSaveSnapshot}
+                onSave={handleEditSnapshot}
                 clearTrigger={clearTrigger}
                 editingSnapshot={editingSnapshot}
             />
