@@ -26,11 +26,7 @@ const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger, editingSnapshot 
             if (editingSnapshot) {
                 setTitle(editingSnapshot.title);
                 setDescription(editingSnapshot.description);
-                editor.commands.setContent(editingSnapshot.description);  // Prefill the description in the editor
-            } else {
-                setTitle("");
-                setDescription("");
-                editor.commands.clearContent();  // Clear content if no editingSnapshot
+                editor.commands.setContent(editingSnapshot.description);
             }
         }
     }, [isOpen, clearTrigger, editingSnapshot, editor]);

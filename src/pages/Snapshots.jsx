@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import DOMPurify from "dompurify"; // Import DOMPurify
+import DOMPurify from "dompurify";
 import ChartBase from "../components/charts/ChartBase";
 import HistoricalDataTable from "../components/MeasurementsTable";
 import SnapshotModal from "../components/SnapshotModal";
@@ -128,10 +128,9 @@ const Snapshots = () => {
             </div>
         );
     };
-
-    // Function to safely render the description HTML
+    
     const renderDescription = (htmlContent) => {
-        const sanitizedHTML = DOMPurify.sanitize(htmlContent);  // Sanitize HTML content
+        const sanitizedHTML = DOMPurify.sanitize(htmlContent);
         return <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />;
     };
 

@@ -39,7 +39,7 @@ const HistoricalDataTable = ({ chartData }) => {
 HistoricalDataTable.propTypes = {
     chartData: PropTypes.arrayOf(
         PropTypes.shape({
-            timestamp: PropTypes.string.isRequired, // Ensure timestamp is a string or Date
+            timestamp: PropTypes.string.isRequired,
             co2: PropTypes.number.isRequired,
             temperature: PropTypes.number.isRequired,
             humidity: PropTypes.number.isRequired,
