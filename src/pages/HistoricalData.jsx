@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
-import { DateRangePicker } from "@tremor/react";
+import { DateRangePicker } from "@tremor/react"; // Assuming you have a DateRangePicker component that supports time
 import ChartBase from "../components/charts/ChartBase";
 import HistoricalDataTable from "../components/MeasurementsTable.jsx";
 import SnapshotModal from "../components/SnapshotModal";
@@ -14,8 +14,8 @@ const HistoricalData = () => {
     const [clearTrigger, setClearTrigger] = useState(0);
 
     const fetchData = async () => {
-        if (!dateRange.from || !dateRange.to) {
-            alert("Please select a valid date range.");
+        if (!dateRange.from) {
+            alert("Please select a valid date.");
             return;
         }
 
@@ -24,7 +24,7 @@ const HistoricalData = () => {
         try {
             const topic = "z2m/air-monitor";
             const start = convertToUTC(dateRange.from);
-            const end = convertToUTC(dateRange.to, true);
+            const end = dateRange.to ? convertToUTC(dateRange.to, true) : convertToUTC(dateRange.from, true);
             const backendUrl = "https://localhost:443/api";
 
             const response = await axios.get(`${backendUrl}/mqtt/messages`, {
@@ -34,21 +34,32 @@ const HistoricalData = () => {
                     end: end.toISOString(),
                 },
             });
-            
-            setFullMessages(response.data);
-            
-            const transformedData = response.data.map((entry) => ({
-                id: entry.id,
-                timestamp: entry.timestamp,
-                co2: entry.deserializedPayload.co2,
-                temperature: entry.deserializedPayload.temperature,
-                humidity: entry.deserializedPayload.humidity,
-            }));
 
-            setChartData(transformedData);
+            if (response.status === 200) {
+                setFullMessages(response.data);
+                const transformedData = response.data.map((entry) => ({
+                    id: entry.id,
+                    timestamp: entry.timestamp,
+                    co2: entry.deserializedPayload.co2,
+                    temperature: entry.deserializedPayload.temperature,
+                    humidity: entry.deserializedPayload.humidity,
+                }));
+                setChartData(transformedData);
+            } else {
+                setFullMessages([]);
+                setChartData([]);
+            }
         } catch (error) {
-            console.error("Error fetching data:", error);
-            alert("Failed to fetch data. Please try again.");
+            if (error.response && error.response.status === 404) {
+                alert("No messages found for this topic within the specified time range.");
+                setFullMessages([]);
+                setChartData([]);
+            } else if (error.response && error.response.data && error.response.data.message) {
+                alert(error.response.data.message);
+            } else {
+                console.error("Error fetching data:", error);
+                alert("Failed to fetch data. Please try again.");
+            }
         } finally {
             setLoading(false);
         }
@@ -85,6 +96,7 @@ const HistoricalData = () => {
     };
 
     const convertToUTC = (date, isEndOfDay = false) => {
+        if (!date) return null;
         const utcDate = new Date(date);
         return new Date(
             Date.UTC(
@@ -119,6 +131,7 @@ const HistoricalData = () => {
                         value={dateRange}
                         onValueChange={(range) => setDateRange(range)}
                         className="flex-1"
+                        showTimePicker // Assuming this prop enables time input
                     />
                     <button
                         onClick={fetchData}
