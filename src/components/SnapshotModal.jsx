@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
 
 const { Toolbar, Content, ControlsGroup, Bold, Italic, Underline: UnderlineControl, Strikethrough, ClearFormatting, Highlight: HighlightControl, Code } = RichTextEditor;
 
-const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger }) => {
+const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger, editingSnapshot }) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
 
@@ -23,18 +23,24 @@ const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger }) => {
 
     useEffect(() => {
         if (isOpen) {
-            setTitle("");
-            setDescription("");
-            editor.commands.clearContent();
+            if (editingSnapshot) {
+                setTitle(editingSnapshot.title);
+                setDescription(editingSnapshot.description);
+                editor.commands.setContent(editingSnapshot.description);  // Prefill the description in the editor
+            } else {
+                setTitle("");
+                setDescription("");
+                editor.commands.clearContent();  // Clear content if no editingSnapshot
+            }
         }
-    }, [isOpen, clearTrigger, editor]);
+    }, [isOpen, clearTrigger, editingSnapshot, editor]);
 
     if (!isOpen) return null;
 
     return ReactDOM.createPortal(
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-slate-950 rounded-lg shadow-lg p-6 w-11/12 max-w-lg">
-                <h2 className="text-xl font-bold mb-4 text-white">Create Snapshot</h2>
+                <h2 className="text-xl font-bold mb-4 text-white">{editingSnapshot ? "Edit Snapshot" : "Create Snapshot"}</h2>
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-white mb-1">Title</label>
                     <input
@@ -57,7 +63,7 @@ const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger }) => {
                                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                             },
                             toolbar: {
-                                backgroundColor: '#e0e0e0', // Darker background
+                                backgroundColor: '#e0e0e0',
                                 borderBottom: '1px solid #a0a0a0',
                                 padding: '4px',
                                 display: 'flex',
@@ -78,7 +84,6 @@ const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger }) => {
                                     backgroundColor: '#d0d0d0',
                                     borderColor: '#888',
                                 },
-                                // Ensuring correct targeting for active state using proper selector
                                 '&[dataActive="true"]': {
                                     backgroundColor: '#c0c0c0',
                                     borderColor: '#666',
@@ -125,6 +130,7 @@ SnapshotModal.propTypes = {
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     clearTrigger: PropTypes.number.isRequired,
+    editingSnapshot: PropTypes.object,
 };
 
 export default SnapshotModal;

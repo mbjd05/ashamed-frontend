@@ -8,6 +8,7 @@ import SnapshotModal from "../components/SnapshotModal";
 const HistoricalData = () => {
     const [dateRange, setDateRange] = useState({ from: null, to: null });
     const [chartData, setChartData] = useState([]);
+    const [fullMessages, setFullMessages] = useState([]);  // Store the full messages data
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
     const [clearTrigger, setClearTrigger] = useState(0);
@@ -34,6 +35,10 @@ const HistoricalData = () => {
                 },
             });
 
+            // Store the full response data
+            setFullMessages(response.data);
+
+            // Transform the data for charts and table
             const transformedData = response.data.map((entry) => ({
                 id: entry.id,
                 timestamp: entry.timestamp,
@@ -52,7 +57,7 @@ const HistoricalData = () => {
     };
 
     const handleSaveSnapshot = async (title, description) => {
-        if (chartData.length === 0) {
+        if (fullMessages.length === 0) {
             alert("No data available to create a snapshot.");
             return;
         }
@@ -60,19 +65,17 @@ const HistoricalData = () => {
         setLoading(true);
 
         try {
-            const messageIds = chartData.map((entry) => entry.id);
-
+            // Send the full messages data to the backend for snapshot creation
             await axios.post("https://localhost:443/api/snapshot", {
-                    title,
-                    description,
-                    messageIds,
-                },
-                {
-                    headers: {
-                        'accept': '*/*',
-                        'Content-Type': 'application/json',
-                    }}
-            );
+                title,
+                description,
+                messages: fullMessages, // Send full message objects
+            }, {
+                headers: {
+                    'accept': '*/*',
+                    'Content-Type': 'application/json',
+                }
+            });
 
             alert("Snapshot created successfully!");
             setModalOpen(false);
