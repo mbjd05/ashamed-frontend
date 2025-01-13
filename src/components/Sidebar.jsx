@@ -1,10 +1,18 @@
 import {NavLink} from 'react-router-dom';
-import {RiHome4Line, RiHistoryLine, RiMenuLine, RiMenuFoldLine, RiMenuUnfoldLine} from '@remixicon/react';
+import {
+    RiHome4Line,
+    RiHistoryLine,
+    RiMenuLine,
+    RiMenuFoldLine,
+    RiMenuUnfoldLine,
+    RiCameraLensLine
+} from '@remixicon/react';
 import {useState} from "react";
 
 const navItems = [
     {title: 'Home', icon: RiHome4Line, path: '/'},
     {title: 'Historical Data', icon: RiHistoryLine, path: '/historyview'},
+    {title: 'Snapshots', icon: RiCameraLensLine, path: '/snapshots'},
 ];
 
 const Sidebar = () => {

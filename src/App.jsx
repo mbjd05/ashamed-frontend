@@ -3,6 +3,7 @@ import { MantineProvider } from '@mantine/core';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import HistoricalData from './pages/HistoricalData';
+import Snapshots from './pages/Snapshots';
 
 const App = () => {
     return (
@@ -14,6 +15,8 @@ const App = () => {
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/historyview" element={<HistoricalData />} />
+                            <Route path={"/snapshots"} element={<Snapshots />} />
+                            <Route path="*" element={<div>Error 404: Not found</div>} />
                         </Routes>
                     </main>
                 </div>

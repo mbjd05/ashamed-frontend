@@ -109,7 +109,8 @@ const HistoricalData = () => {
     }, []);
 
     return (
-        <div className="p-8">
+        <div className="p-6">
+            <h1 className="text-2xl font-semibold">Historical Environmental Data</h1>
             <div className="mx-auto max-w-lg space-y-6">
                 <p className="text-center font-mono text-sm">Select a Date Range</p>
 
@@ -132,12 +133,12 @@ const HistoricalData = () => {
             {chartData.length > 0 && (
                 <>
                     <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
-                        <ChartBase title="CO2 Levels" dataKey="co2" data={chartData} color="indigo" />
-                        <ChartBase title="Temperature" dataKey="temperature" data={chartData} color="red" />
-                        <ChartBase title="Humidity" dataKey="humidity" data={chartData} color="green" />
+                        <ChartBase title="CO2 Levels" dataKey="co2" data={chartData} color="indigo"/>
+                        <ChartBase title="Temperature" dataKey="temperature" data={chartData} color="red"/>
+                        <ChartBase title="Humidity" dataKey="humidity" data={chartData} color="green"/>
                     </div>
 
-                    <HistoricalDataTable chartData={chartData} />
+                    <HistoricalDataTable chartData={chartData}/>
 
                     <div className="text-center mt-6">
                         <button
