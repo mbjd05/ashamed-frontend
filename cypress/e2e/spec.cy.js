@@ -39,10 +39,12 @@ describe('History View Tests', () => {
     
     cy.get('[data-cy="snapshot-title"]')
         .type('Cypress Snapshot Title');
-    
+
     cy.get('[data-cy="snapshot-description"]')
-        .find('[contenteditable="true"]')  
-        .click()
+        .find('[contenteditable="true"]')
+        .click();
+
+    cy.get('[data-cy="snapshot-description"] [contenteditable="true"]')
         .type('This snapshot was created by Cypress!');
     
     cy.get('[data-cy="snapshot-save"]')

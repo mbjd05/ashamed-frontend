@@ -19,13 +19,18 @@ export default [
       parserOptions: {
         ecmaFeatures: { jsx: true },
       },
+      globals: {
+        cy: 'readonly',
+        Cypress: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+      },
     },
     rules: {
-      ...pluginCypress.configs.recommended.rules,
+      ...pluginCypress.configs.recommended.rules || {},
     },
-    env: {
-      'cypress/globals': true
-    }
   },
   {
     files: ['**/*.{js,jsx}'],
