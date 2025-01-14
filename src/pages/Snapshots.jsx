@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import DOMPurify from "dompurify";
 import ChartBase from "../components/charts/ChartBase";
-import HistoricalDataTable from "../components/MeasurementsTable";
+import MeasurementsDataTable from "../components/MeasurementsTable";
 import SnapshotModal from "../components/SnapshotModal";
 
 const API_BASE_URL = "https://localhost:443/api";
@@ -166,7 +166,7 @@ const Snapshots = () => {
                             {renderDescription(selectedSnapshot.description)}
                         </div>
                         {renderCharts()}
-                        <HistoricalDataTable chartData={selectedSnapshot.messages.map((msg) => ({
+                        <MeasurementsDataTable chartData={selectedSnapshot.messages.map((msg) => ({
                             timestamp: new Date(msg.timestamp).toISOString(),
                             co2: msg.deserializedPayload.co2,
                             temperature: msg.deserializedPayload.temperature,

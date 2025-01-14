@@ -8,10 +8,10 @@ import {
     TableRow,
 } from "@tremor/react";
 
-const HistoricalDataTable = ({ chartData }) => {
+const MeasurementsDataTable = ({ chartData }) => {
     return (
         <div className="mx-auto max-w-2xl mt-8">
-            <Table>
+            <Table data-cy="data-table">
                 <TableHead>
                     <TableRow>
                         <TableHeaderCell>Timestamp</TableHeaderCell>
@@ -36,7 +36,7 @@ const HistoricalDataTable = ({ chartData }) => {
     );
 };
 
-HistoricalDataTable.propTypes = {
+MeasurementsDataTable.propTypes = {
     chartData: PropTypes.arrayOf(
         PropTypes.shape({
             timestamp: PropTypes.string.isRequired,
@@ -47,4 +47,4 @@ HistoricalDataTable.propTypes = {
     ).isRequired,
 };
 
-export default HistoricalDataTable;
+export default MeasurementsDataTable;

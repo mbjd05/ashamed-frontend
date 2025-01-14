@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { RichTextEditor } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
@@ -12,6 +12,7 @@ const { Toolbar, Content, ControlsGroup, Bold, Italic, Underline: UnderlineContr
 const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger, editingSnapshot }) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const editorRef = useRef(null);
 
     const editor = useEditor({
         extensions: [StarterKit, Underline, Highlight],
@@ -31,6 +32,13 @@ const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger, editingSnapshot 
         }
     }, [isOpen, clearTrigger, editingSnapshot, editor]);
 
+    // Expose editor instance for Cypress
+    useEffect(() => {
+        if (editor && editorRef.current) {
+            editorRef.current.editorInstance = editor; // Make the editor instance available globally
+        }
+    }, [editor]);
+
     if (!isOpen) return null;
 
     return ReactDOM.createPortal(
@@ -45,12 +53,15 @@ const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger, editingSnapshot 
                         placeholder="Enter snapshot title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+                        data-cy={"snapshot-title"}
                     />
                 </div>
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-white mb-1">Description</label>
                     <RichTextEditor
                         editor={editor}
+                        data-cy={"snapshot-description"}
+                        ref={editorRef}
                         styles={{
                             root: {
                                 border: '2px solid #4a4a4a',
@@ -104,12 +115,14 @@ const SnapshotModal = ({ isOpen, onClose, onSave, clearTrigger, editingSnapshot 
                 <div className="flex justify-end space-x-2">
                     <button
                         className="py-2 px-4 bg-gray-400 text-white rounded"
+                        data-cy={"snapshot-cancel"}
                         onClick={onClose}
                     >
                         Cancel
                     </button>
                     <button
                         className="py-2 px-4 bg-blue-600 text-white rounded"
+                        data-cy={"snapshot-save"}
                         onClick={() => onSave(title, description)}
                     >
                         Save Snapshot

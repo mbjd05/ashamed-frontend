@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import axios from "axios";
 import { DateRangePicker } from "@tremor/react";
 import ChartBase from "../components/charts/ChartBase";
-import HistoricalDataTable from "../components/MeasurementsTable.jsx";
+import MeasurementsDataTable from "../components/MeasurementsTable.jsx";
 import SnapshotModal from "../components/SnapshotModal";
 
 const HistoricalData = () => {
@@ -146,12 +146,14 @@ const HistoricalData = () => {
                         value={dateRange}
                         onValueChange={handleDateChange}
                         className="flex-1"
-                        toDate={today}
+                        maxDate={today}
+                        data-cy="date-range-picker"
                     />
                     <button
                         onClick={fetchData}
                         className="py-2 px-4 bg-primary hover:bg-primary-dark text-white rounded"
                         disabled={loading}
+                        data-cy="data-fetch"
                     >
                         {loading ? "Fetching Data..." : "Fetch Data"}
                     </button>
@@ -187,12 +189,13 @@ const HistoricalData = () => {
                         <button
                             onClick={openModal}
                             className="py-2 px-4 bg-blue-600 text-white rounded"
+                            data-cy="snapshot-create"
                         >
                             Create Snapshot
                         </button>
                     </div>
 
-                    <HistoricalDataTable chartData={chartData}/>
+                    <MeasurementsDataTable chartData={chartData}/>
                 </>
             )}
 
