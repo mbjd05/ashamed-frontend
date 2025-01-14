@@ -25,10 +25,12 @@ export default [
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
+      sourceType: 'module',
       parserOptions: {
-        ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
-        sourceType: 'module',
+      },
+      globals: {
+        ...globals.browser,
       },
     },
     settings: { react: { version: '18.3' } },
@@ -47,9 +49,6 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
-    },
-    globals: {
-      ...globals.browser, 
     },
   },
 ];
