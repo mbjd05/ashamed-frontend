@@ -3,20 +3,29 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import pluginCypress from 'eslint-plugin-cypress/flat';
-import globals from "globals";
 
 export default [
   {
     ignores: ['dist'],
   },
   {
-    files: ['cypress/**/*.js'],
+    files: ['cypress/**/*.{js,jsx,ts,tsx}'],
     plugins: {
       cypress: pluginCypress,
+    },
+    languageOptions: {
+      ecmaVersion: 2020,
+      sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
     },
     rules: {
       ...pluginCypress.configs.recommended.rules,
     },
+    env: {
+      'cypress/globals': true
+    }
   },
   {
     files: ['**/*.{js,jsx}'],
@@ -25,9 +34,6 @@ export default [
       sourceType: 'module',
       parserOptions: {
         ecmaFeatures: { jsx: true },
-      },
-      globals: {
-        ...globals.browser,
       },
     },
     settings: { react: { version: '18.3' } },
