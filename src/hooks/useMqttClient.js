@@ -14,7 +14,7 @@ const useMqttClient = (topic) => {
             return clientRef.current;
         }
 
-        const connectUrl = "ws://localhost:8883";
+        const connectUrl = "ws://host.docker.internal:8883";
         const options = {
             clientId: `mqtt_${Math.random().toString(16).slice(2, 10)}`,
             protocol: "ws",
