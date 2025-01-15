@@ -39,13 +39,13 @@ const HistoricalData = () => {
 
         try {
             const topic = "z2m/air-monitor";
+            const encodedTopic = encodeURIComponent(topic);
             const start = convertToUTC(dateRange.from);
             const end = dateRange.to ? convertToUTC(dateRange.to, true) : convertToUTC(dateRange.from, true);
             const backendUrl = "https://localhost:443/api";
 
-            const response = await axios.get(`${backendUrl}/mqtt/messages`, {
+            const response = await axios.get(`${backendUrl}/mqtt/${encodedTopic}/messages-by-time-range`, {
                 params: {
-                    topic: topic,
                     start: start.toISOString(),
                     end: end.toISOString(),
                 },
@@ -89,7 +89,7 @@ const HistoricalData = () => {
         setLoading(true);
 
         try {
-            await axios.post("https://localhost:443/api/snapshot", {
+            await axios.post("https://localhost:443/api/snapshots", {
                 title,
                 description,
                 messages: fullMessages,

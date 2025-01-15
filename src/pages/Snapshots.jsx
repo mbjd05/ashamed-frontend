@@ -18,7 +18,7 @@ const Snapshots = () => {
     const fetchSnapshots = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/snapshot`);
+            const response = await axios.get(`${API_BASE_URL}/snapshots`);
             if (response.data.snapshots && Array.isArray(response.data.snapshots)) {
                 setSnapshots(response.data.snapshots);
             } else {
@@ -34,7 +34,7 @@ const Snapshots = () => {
     const fetchSnapshotDetails = useCallback(async (id) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/snapshot/${id}`);
+            const response = await axios.get(`${API_BASE_URL}/snapshots/${id}`);
             setSelectedSnapshot(response.data);
         } catch (error) {
             console.error("Error fetching snapshot details:", error);
@@ -67,7 +67,7 @@ const Snapshots = () => {
     const handleEditSnapshot = async (title, description) => {
         try {
             setLoading(true);
-            await axios.put(`${API_BASE_URL}/snapshot/${editingSnapshot.id}`, {
+            await axios.put(`${API_BASE_URL}/snapshots/${editingSnapshot.id}`, {
                 title,
                 description,
             });
@@ -86,7 +86,7 @@ const Snapshots = () => {
     const handleDeleteSnapshot = async (id) => {
         try {
             setLoading(true);
-            await axios.delete(`${API_BASE_URL}/snapshot/${id}`);
+            await axios.delete(`${API_BASE_URL}/snapshots/${id}`);
             alert("Snapshot deleted successfully!");
             await fetchSnapshots();
             if (selectedSnapshot && selectedSnapshot.id === id) {
