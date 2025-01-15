@@ -3,7 +3,8 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import pluginCypress from 'eslint-plugin-cypress/flat';
-import {browser} from "globals";
+import globals from "globals";
+const { browser } = globals;
 
 export default [
   {
