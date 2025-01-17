@@ -5,7 +5,7 @@ import ChartBase from "../components/charts/ChartBase";
 import MeasurementsDataTable from "../components/MeasurementsTable";
 import SnapshotModal from "../components/SnapshotModal";
 
-const API_BASE_URL = "https://localhost:443/api";
+const API_BASE_URL = "https://host.docker.internal:443/api";
 
 const Snapshots = () => {
     const [snapshots, setSnapshots] = useState([]);

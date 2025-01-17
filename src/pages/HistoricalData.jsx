@@ -42,7 +42,7 @@ const HistoricalData = () => {
             const encodedTopic = encodeURIComponent(topic);
             const start = convertToUTC(dateRange.from);
             const end = dateRange.to ? convertToUTC(dateRange.to, true) : convertToUTC(dateRange.from, true);
-            const backendUrl = "https://localhost:443/api";
+            const backendUrl = "https://host.docker.internal:443/api";
 
             const response = await axios.get(`${backendUrl}/mqtt/${encodedTopic}/messages-by-time-range`, {
                 params: {
@@ -89,7 +89,7 @@ const HistoricalData = () => {
         setLoading(true);
 
         try {
-            await axios.post("https://localhost:443/api/snapshots", {
+            await axios.post("https://host.docker.internal:443/api/snapshots", {
                 title,
                 description,
                 messages: fullMessages,
