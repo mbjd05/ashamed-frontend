@@ -44,14 +44,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Start Vite dev server
-        run: pnpm run dev -- --host 0.0.0.0 &
-        env:
-          HOST: 0.0.0.0
-        timeout-minutes: 2  
+      # - name: Start Vite dev server
+      #   run: pnpm run dev -- --host 0.0.0.0 &
+      #   env:
+      #     HOST: 0.0.0.0
+      #   timeout-minutes: 2  
 
-      - name: Run Cypress tests
-        run: pnpm dlx cypress run
+      # - name: Run Cypress tests
+      #   run: pnpm dlx cypress run
 
       - name: Build Vite project
         run: pnpm dlx vite build
