@@ -1,3 +1,5 @@
+LABEL org.opencontainers.image.source="https://github.com/${{ github.repository }}"
+
 FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
